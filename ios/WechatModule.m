@@ -2,11 +2,14 @@
 #import "RCTBridgeModule.h"
 #import <UIKit/UIKit.h>
 #import "WXApi.h"
+#import "RCTConvert.h"
 
 @interface WechatModule : NSObject<RCTBridgeModule,WXApiDelegate>
 
 @property(nonatomic, copy) RCTPromiseResolveBlock authReqResolve;
 @property(nonatomic, copy) RCTPromiseRejectBlock authReqReject;
+@property(nonatomic, copy) RCTPromiseResolveBlock msgReqResolve;
+@property(nonatomic, copy) RCTPromiseRejectBlock msgReqReject;
 @end
 
 @implementation WechatModule
@@ -87,6 +90,30 @@ RCT_EXPORT_METHOD(sendAuthReq:(NSString*)scope state:(NSString*)state
     self.authReqResolve = resolve;
     self.authReqReject = reject;
     [WXApi sendReq:req];
+}
+
+RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
+                  resolve:(RCTPromiseResolveBlock) resolve
+                  reject:(RCTPromiseRejectBlock) reject)
+{
+    self.msgReqResolve = resolve;
+    self.msgReqReject = reject;
+    
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+    if([msg objectForKey:@"text"]){
+        req.text = msg[@"text"];
+        req.bText = YES;
+    }
+    req.scene = scene;
+    [WXApi sendReq:req];
+}
+
+-(NSDictionary*) constantsToExport
+{
+    return @{
+             @"WXSceneSession":@(WXSceneSession),
+             @"WXSceneTimeline":@(WXSceneTimeline),
+             @"WXSceneFavorite":@(WXSceneFavorite)};
 }
 
 @end
