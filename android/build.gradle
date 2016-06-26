@@ -23,6 +23,16 @@ android {
   lintOptions {
     abortOnError false
   }
+  buildTypes {
+    debug {
+      buildConfigField "String", "APP_ID", '"'+WECHAT_APP_ID +'"'
+    }
+    release {
+      buildConfigField "String", "APP_ID", '"'+WECHAT_APP_ID +'"'
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
 }
 
 repositories {

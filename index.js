@@ -1,26 +1,7 @@
-'use strict';
-
-var React = require('react-native');
-var {
+import {
   NativeModules
-} = React;
+} from 'react-native';
 
-var WechatAPI = NativeModules.RNWechatModule || NativeModules.RNWechatManager;
+let { WechatModule } = NativeModules;
 
-var login = function(scopes, callback){
-  WechatAPI.login(scopes, function(err, data){
-    console.log(arguments);
-    var obj = data;
-    if(!err && data) obj = JSON.parse(data);
-    callback && callback(err, obj);
-  });
-}
-
-var sendAuthReq = function(scope, state, callback){
-  WechatAPI.sendAuthReq(scope, state, callback);
-}
-
-module.exports = {
-  login,
-  sendAuthReq
-}
+export var sendAuthReq = WechatModule.sendAuthReq;
