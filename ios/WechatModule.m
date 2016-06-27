@@ -10,6 +10,8 @@
 @property(nonatomic, copy) RCTPromiseRejectBlock authReqReject;
 @property(nonatomic, copy) RCTPromiseResolveBlock msgReqResolve;
 @property(nonatomic, copy) RCTPromiseRejectBlock msgReqReject;
+
+@property(nonatomic, copy) NSString* appId;
 @end
 
 @implementation WechatModule
@@ -19,7 +21,7 @@
     self = [super init];
     if(self){
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURL:) name:@"RCTOpenURLNotification" object:nil];
-        
+
         NSString* appId = nil;
         NSArray* list = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleURLTypes"];
         for(NSDictionary* item in list){
@@ -33,7 +35,7 @@
                 }
             }
         }
-        
+        self.appId = appId;
         [WXApi registerApp:appId];
     }
     return self;
@@ -59,7 +61,7 @@
 {
     if([resp isKindOfClass:[SendAuthResp class]]){
         SendAuthResp * authResp = (SendAuthResp *) resp;
-        
+
         if(authResp.code){
             if(self.authReqResolve){
                 self.authReqResolve(authResp.code);
@@ -73,7 +75,7 @@
                 self.authReqReject = nil;
             }
         }
-        
+
     }
 }
 
@@ -98,7 +100,7 @@ RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
 {
     self.msgReqResolve = resolve;
     self.msgReqReject = reject;
-    
+
     SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
     if([msg objectForKey:@"text"]){
         req.text = msg[@"text"];
@@ -113,7 +115,8 @@ RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
     return @{
              @"WXSceneSession":@(WXSceneSession),
              @"WXSceneTimeline":@(WXSceneTimeline),
-             @"WXSceneFavorite":@(WXSceneFavorite)};
+             @"WXSceneFavorite":@(WXSceneFavorite),
+             @"APP_ID":self.appId};
 }
 
 @end

@@ -36,7 +36,7 @@ public class WechatModule extends ReactContextBaseJavaModule implements Activity
 
   private Promise authReqPromise;
 
-  private String appId = BuildConfig.APP_ID;
+  private static final String appId = BuildConfig.APP_ID;
 
   @Override
   public String getName() {
@@ -106,6 +106,7 @@ public class WechatModule extends ReactContextBaseJavaModule implements Activity
     constants.put("WXSceneSession", SendMessageToWX.Req.WXSceneSession);
     constants.put("WXSceneTimeline", SendMessageToWX.Req.WXSceneTimeline);
     constants.put("WXSceneFavorite", SendMessageToWX.Req.WXSceneFavorite);
+    constants.put("APP_ID", appId);
     return constants;
   }
 
