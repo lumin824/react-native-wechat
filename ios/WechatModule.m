@@ -105,7 +105,21 @@ RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
     if([msg objectForKey:@"text"]){
         req.text = msg[@"text"];
         req.bText = YES;
+    }else{
+        WXMediaMessage* message = [WXMediaMessage message];
+        req.message = message;
+        req.bText = NO;
+        if([msg objectForKey:@"imageUri"]){
+            NSString* imagePath = msg[@"imageUri"];
+            if([imagePath hasPrefix:@"file://"]){
+                imagePath = [imagePath substringFromIndex:[@"file://" length]];
+                WXImageObject* mediaObject = [WXImageObject object];
+                mediaObject.imageData = [NSData dataWithContentsOfFile:imagePath];
+                message.mediaObject = mediaObject;
+            }
+        }
     }
+
     req.scene = scene;
     [WXApi sendReq:req];
 }

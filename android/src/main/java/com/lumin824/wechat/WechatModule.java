@@ -1,6 +1,8 @@
 package com.lumin824.wechat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -13,6 +15,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -93,6 +96,18 @@ public class WechatModule extends ReactContextBaseJavaModule implements Activity
     if(msg.hasKey("text")){
       String text = msg.getString("text");
       message.mediaObject = new WXTextObject(text);
+    }
+    else{
+
+      if(msg.hasKey("imageUri")){
+        String imagePath = msg.getString("imageUri");
+        if(imagePath.startsWith("file://")){
+          imagePath = imagePath.substring("file://".length());
+          Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+          WXImageObject mediaObject = new WXImageObject(bitmap);
+          message.mediaObject = mediaObject;
+        }
+      }
     }
     req.message = message;
     req.scene = scene;
