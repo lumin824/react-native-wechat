@@ -119,7 +119,7 @@ RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
             }
         }
     }
-
+    
     req.scene = scene;
     [WXApi sendReq:req];
 }
