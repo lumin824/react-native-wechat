@@ -86,12 +86,18 @@ RCT_EXPORT_METHOD(sendAuthReq:(NSString*)scope state:(NSString*)state
                   resolve:(RCTPromiseResolveBlock) resolve
                   reject:(RCTPromiseRejectBlock) reject)
 {
-    SendAuthReq* req = [[SendAuthReq alloc]init];
-    req.scope = scope;
-    req.state = state;
-    self.authReqResolve = resolve;
-    self.authReqReject = reject;
-    [WXApi sendReq:req];
+    if ([WXApi isWXAppInstalled]) {
+        SendAuthReq* req = [[SendAuthReq alloc]init];
+        req.scope = scope;
+        req.state = state;
+        self.authReqResolve = resolve;
+        self.authReqReject = reject;
+        [WXApi sendReq:req];
+    }else{
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"没有安装微信软件，请您安装微信之后再试" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alertView show];
+    }
 }
 
 RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
