@@ -130,6 +130,16 @@ RCT_EXPORT_METHOD(sendMsgReq:(NSDictionary*)msg scene:(int)scene
     [WXApi sendReq:req];
 }
 
+RCT_EXPORT_METHOD(isWXAppInstalled:(RCTPromiseResolveBlock) resolve
+                  reject:(RCTPromiseRejectBlock) reject)
+{
+    if([WXApi isWXAppInstalled]){
+        resolve(@"true");
+    }else{
+        resolve(@"");
+    }
+}
+
 -(NSDictionary*) constantsToExport
 {
     return @{
